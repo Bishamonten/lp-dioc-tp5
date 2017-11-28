@@ -3,6 +3,7 @@
 namespace App\DataFixtures\ORM;
 
 use App\Entity\Player;
+use App\Entity\PlayerPotion;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
@@ -24,11 +25,24 @@ class LoadPlayer extends Fixture
             $faker->name => 'handgun',
         ];
 
+        $potions = [
+            'Coca cola',
+            'Elixir',
+            'Fanta',
+            'Vittel'
+        ];
+
         foreach ($players as $name => $weapon) {
             $player = new Player();
             $player->setName($name);
             $player->setCurrentWeapon($this->getReference($weapon));
 
+            for($i = 0; $i < 4; $i++) {
+               $playerPotion = new PlayerPotion();
+               $playerPotion->setCount(rand(0,5));
+               $playerPotion->setPotion($this->getReference($potions[$i]));
+               $player->addPlayerPotion($playerPotion);
+            }
             $manager->persist($player);
         }
 
@@ -37,6 +51,9 @@ class LoadPlayer extends Fixture
 
     public function getDependencies()
     {
-        return [LoadWeapon::class];
+        return [
+            LoadWeapon::class,
+            LoadPotion::class
+        ];
     }
 }

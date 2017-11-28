@@ -6,7 +6,13 @@
  * Time: 11:01
  */
 
+namespace App\Health;
+
+
 class Health
 {
+    public $player;
+    public $potion;
+    public $count;
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +31,19 @@ class Player
      * @ORM\ManyToOne(targetEntity="Weapon")
      */
     private $currentWeapon;
+
+    /**
+     * @ORM\OneToMany(targetEntity="PlayerPotion", mappedBy="player", cascade={"persist"})
+     */
+    private $playerPotions;
+
+    /**
+     * Player constructor.
+     */
+    public function __construct()
+    {
+        $this->playerPotions = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -65,4 +79,31 @@ class Player
     {
         $this->currentWeapon = $currentWeapon;
     }
+
+    public function addPlayerPotion($playerPotion){
+        if($this->playerPotions->contains($playerPotion)){
+            return;
+        }
+        $this->playerPotions->add($playerPotion);
+        $playerPotion->setPlayer($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlayerPotions()
+    {
+        return $this->playerPotions;
+    }
+
+    /**
+     * @param mixed $playerPotions
+     */
+    public function setPlayerPotions($playerPotions)
+    {
+        $this->playerPotions = $playerPotions;
+    }
+
+
+
 }
